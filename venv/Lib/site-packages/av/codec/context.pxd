@@ -1,7 +1,7 @@
 cimport libav as lib
 from libc.stdint cimport int64_t
 
-from av.bytesource cimport ByteSource
+from av.buffer cimport ByteSource
 from av.codec.codec cimport Codec
 from av.codec.hwaccel cimport HWAccel
 from av.frame cimport Frame
@@ -13,6 +13,10 @@ cdef class CodecContext:
 
     # Whether AVCodecContext.extradata should be de-allocated upon destruction.
     cdef bint extradata_set
+
+    # True when created via add_stream_from_template(); start_encoding() skips
+    # avcodec_open2() and lets encode()/decode() open the codec lazily if needed.
+    cdef readonly bint _template_initialized
 
     # Used as a signal that this is within a stream, and also for us to access that
     # stream. This is set "manually" by the stream after constructing this object.
@@ -40,7 +44,7 @@ cdef class CodecContext:
     # TODO: Remove the `Packet` from `_setup_decoded_frame` (because flushing packets
     # are bogus). It should take all info it needs from the context and/or stream.
     cdef _prepare_and_time_rebase_frames_for_encode(self, Frame frame)
-    cdef _prepare_frames_for_encode(self, Frame frame)
+    cdef list _prepare_frames_for_encode(self, Frame frame)
     cdef _setup_encoded_packet(self, Packet)
     cdef _setup_decoded_frame(self, Frame, Packet)
 

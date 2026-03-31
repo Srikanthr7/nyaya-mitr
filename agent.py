@@ -17,13 +17,13 @@ class Assistant(Agent):
 
 async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
-    llm=google.beta.realtime.RealtimeModel(
-        model="gemini-2.0-flash-exp",
-        voice="Puck",
-        temperature=0.8,
-        instructions=Agent_instruction
+        llm=google.realtime.RealtimeModel(
+            voice="Puck",
+            temperature=0.6,  # Reduced for faster responses
+            instructions=Agent_instruction
+        )
     )
-    )
+
     await session.start(
         room=ctx.room,
         agent=Assistant(),

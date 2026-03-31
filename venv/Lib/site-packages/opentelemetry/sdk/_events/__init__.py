@@ -11,21 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import logging
 from time import time_ns
 from typing import Optional
+
+from typing_extensions import deprecated
 
 from opentelemetry import trace
 from opentelemetry._events import Event
 from opentelemetry._events import EventLogger as APIEventLogger
 from opentelemetry._events import EventLoggerProvider as APIEventLoggerProvider
-from opentelemetry._logs import NoOpLogger, SeverityNumber, get_logger_provider
-from opentelemetry.sdk._logs import Logger, LoggerProvider, LogRecord
+from opentelemetry._logs import (
+    LogRecord,
+    NoOpLogger,
+    SeverityNumber,
+    get_logger_provider,
+)
+from opentelemetry.sdk._logs import Logger, LoggerProvider
 from opentelemetry.util.types import _ExtendedAttributes
 
 _logger = logging.getLogger(__name__)
 
 
+@deprecated(
+    "You should use `Logger` instead. "
+    "Deprecated since version 1.39.0 and will be removed in a future release."
+)
 class EventLogger(APIEventLogger):
     def __init__(
         self,
@@ -50,6 +62,7 @@ class EventLogger(APIEventLogger):
             # Do nothing if SDK is disabled
             return
         span_context = trace.get_current_span().get_span_context()
+
         log_record = LogRecord(
             timestamp=event.timestamp or time_ns(),
             observed_timestamp=None,
@@ -59,12 +72,15 @@ class EventLogger(APIEventLogger):
             severity_text=None,
             severity_number=event.severity_number or SeverityNumber.INFO,
             body=event.body,
-            resource=getattr(self._logger, "resource", None),
             attributes=event.attributes,
         )
         self._logger.emit(log_record)
 
 
+@deprecated(
+    "You should use `LoggerProvider` instead. "
+    "Deprecated since version 1.39.0 and will be removed in a future release."
+)
 class EventLoggerProvider(APIEventLoggerProvider):
     def __init__(self, logger_provider: Optional[LoggerProvider] = None):
         self._logger_provider = logger_provider or get_logger_provider()

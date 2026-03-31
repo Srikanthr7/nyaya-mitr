@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from typing import MutableMapping, MutableSequence
 
-from google.protobuf import timestamp_pb2  # type: ignore
+import google.protobuf.timestamp_pb2 as timestamp_pb2  # type: ignore
 import proto  # type: ignore
 
 __protobuf__ = proto.module(
@@ -105,6 +105,7 @@ class CustomClass(proto.Message):
             DELETED (4):
                 This CustomClass has been deleted.
         """
+
         STATE_UNSPECIFIED = 0
         ACTIVE = 2
         DELETED = 4
@@ -262,6 +263,7 @@ class PhraseSet(proto.Message):
             DELETED (4):
                 This CustomClass has been deleted.
         """
+
         STATE_UNSPECIFIED = 0
         ACTIVE = 2
         DELETED = 4
